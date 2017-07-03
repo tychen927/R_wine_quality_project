@@ -1,0 +1,650 @@
+---
+output: html_document
+---
+Investigation of Wine Quality by T.Y. Chen
+========================================================
+
+##### Some notes:
+
+-  I used different color (instead of a gradient of color) for different level of 
+"quality" as I found it clearer for me to recognize the relationship~
+(gradient of color for me is a bit difficult to read)
+(and using different kind of line instead of gradient of color is of same reason)
+
+-  Thanks for the suggestion. However I found it easier to comprehend if I discuss
+all the graphs together at the end of each kind of graph, as some of the vars have
+quite similar properties.
+
+- What I'm gonna do is to first plot all possible plots in the dataset, then spot 
+some specific plot/ vars to discuss further. I think this preserve the fact that 
+we can also look at all the vars alltogeter, while still preserves some sort of 
+reader-friendliness
+
+Thank you!
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE,echo=FALSE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(entropy)
+library(RColorBrewer)
+setwd("/Users/TYChen/Dropbox/Udacity/P4")
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+main <- read.csv("wineQualityReds.csv")
+```
+
+# Univariate Plots Section
+```{r echo=FALSE, Univariate_Plots}
+colname_main = as.list(c("fixed.acidity","volatile.acidity","citric.acid",
+                         "residual.sugar","chlorides","free.sulfur.dioxide",
+                         "total.sulfur.dioxide","density","pH","sulphates","alcohol"))
+
+
+
+#print(qplot(main[a],xlab=a))
+summary(main)
+```
+
+# Univariate Analysis
+```{r} 
+a = colname_main[[1]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: approx. normal; skewed right; however don't have much observation around 10
+- Center: around 6-8
+- Spread: pretty wide; approx 6-16
+- Outliers: a few at 15-17
+
+```{r} 
+a = colname_main[[2]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: approx. uniform distributed; with decreasing number of observations on the right side
+- Center: around 0.3-0.7
+- Spread: 0.2-1.2
+- Outliers: a few at 1.6
+
+```{r} 
+a = colname_main[[3]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: quite random; however the number start to decrease from 0.5 on
+- Center: hard to say; maybe around 0.3
+- Spread: 0-0.75
+- Outliers: at 1
+
+```{r} 
+a = colname_main[[4]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: bell-shaped; right-skewed
+- Center: approx.1.5
+- Spread: 0-6
+- Outliers: at 8,11,13-15,16
+
+```{r} 
+a = colname_main[[5]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: similar to last one; bell-shaped; right-skewed
+- Center: approx. 0.1
+- Spread: 0-0.2
+- Outliers: at 0.2,0.3-0.4,0.6
+
+```{r} 
+a = colname_main[[6]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: as value increases, the number of observation decreases; right-skewed
+- Center: hard to say; approx. 15
+- Spread: 0-50
+- Outliers: at 65-70
+
+```{r} 
+a = colname_main[[7]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: as value increases, the number of observation decreases; right-skewed
+- Center: hard to say; approx. 50
+- Spread: 0-150
+- Outliers: at 300
+
+```{r} 
+a = colname_main[[8]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: normally distributed; skewed a bit left
+- Center: 0.997
+- Spread: 0.990-1.005
+- Outliers: at 0.990
+
+```{r} 
+a = colname_main[[9]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: normally distributed; pretty symmetric
+- Center: 3.3
+- Spread: 2.8-3.7
+- Outliers: at 4
+
+```{r} 
+a = colname_main[[10]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: approx. normally distributed; skewed right
+- Center: 0.7
+- Spread: 0.4-1.2
+- Outliers: at 1.6,2
+
+```{r} 
+a = colname_main[[11]]
+print(qplot(main[a],xlab=a))
+```
+
+### graph summary
+
+- Shape: as value increases, the number of observation decreases; right-skewed
+- Center: hard to say; 12
+- Spread: 9-14
+- Outliers: at 15
+
+## summary
+- most of the vars distributed normally (bell-shaped)
+- sulphates, total sulfur dioxide, free sulfur dioxide, chlorides, residual sugar
+are all skewed right
+
+## What is the structure of your dataset?
+1599 obs.
+12 vars: 11 independent, 1 dependent vars.
+
+## What is/are the main feature(s) of interest in your dataset?
+"quality" is the main feature of interest. Other vars serves as classfier for this var.
+
+## What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+### Four main categories:
+* basic characterstics: pH, density, alcohol
+* acidity: fixed.acidity, volatile.acidity, citric.acid
+* (sulfur) dioxide: free.sulfur.dioxide, total.sulfur.dioxide
+* other flavor: residual.sugar, chlorides
+
+## Did you create any new variables from existing variables in the dataset?
+No.
+
+## Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+No.
+
+# Bivariate Plots Section
+
+# Bivariate Analysis
+
+## Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+```{r}
+## bar chart; x = quality ; y = vars in question
+for (a in colname_main){
+x_data = aggregate(main[a],by=main["quality"],FUN=mean)
+x_plot = ggplot(main,aes(y=main[a],x=main["quality"]))
+x_plot = x_plot + layer(
+  geom = "bar",
+  stat = "identity",
+  position = "identity"
+)
+x_plot = x_plot + ylab(a) + xlab("quality")
+print(x_plot)
+}
+bar_plotting <- function(a){
+x_data = aggregate(main[a],by=main["quality"],FUN=mean)
+x_plot = ggplot(main,aes(y=main[a],x=main["quality"]))
+x_plot = x_plot + layer(
+  geom = "bar",
+  stat = "identity",
+  position = "identity"
+)
+x_plot = x_plot + ylab(a) + xlab("quality")
+print(x_plot)
+}
+
+```
+
+### explanation
+Since the dependent var is "quality", I plot all other vars againt quality. 
+However we have to keep in mind that "quality" basically has a normally distribution. 
+The mediocre wine has the greatest number.
+
+## For the bar chart part:
+1. "residual.sugar" has a interesting distribution. Basically those extremely high (8,9) or low (2,3) quality wine are low in this vars, while mediocre wine has high value on this var.
+2. "chlorides" and "sulphates" has quite similar property with "residual.sugar"
+3. "free.sulfur.dioxide" also has some quite similar property. However, its closely related vars "total.sulfur.dioxide" behave a bit differently. While the wine quality increases as it increases, the best wine (8,9) has low "total.sulfur.dioxide".
+4. "density" and "pH" are quite unrealted to quality
+5. "fixed.acidity" has weak linkage, however bad wine do have lower fixed.acidity.
+6. "volatile.acidity" basically gets lower when quality increases
+7.  "alcohol" goes up as "quality" goes up
+
+```{r echo=FALSE, Bivariate_Plots}
+
+main$quality_new =  sapply(main["quality"],as.factor)
+color_quality = brewer.pal(n = 9, "Blues")[4:9]
+
+## boxplot + jitter
+for (a in colname_main){
+box = ggplot(main,aes(main$quality_new,main[a],color = main$quality_new)) + geom_boxplot()
+box = box + scale_color_manual(values = color_quality)
+box = box + geom_jitter(size = 0.1)
+box = box + ylab(a) + xlab("quality")
+print(box)
+}
+
+box_jitter_plotting <- function(a){
+box = ggplot(main,aes(main$quality_new,main[a],color = main$quality_new)) + geom_boxplot()
+box = box + scale_color_manual(values = color_quality)
+box = box + geom_jitter(size = 0.1)
+box = box + ylab(a) + xlab("quality")
+print(box) 
+}
+```
+
+## For the boxplot + jitter graph:
+* quality "5" & "6"" has lots of outlier in most vars
+* 5,6 (regarding acidity) is further verified
+* citric.acid gets higher as quality gets better
+* residual sugar basically remains quite the same across all quality, the 1 claim 
+might be a effect of some outliers in higher quality wine. so does chlorides
+* "free.sulfur.dioxide" has these "bell-shaped" distribution as stated in 3, while 
+the "total.sulfur.dioxide" are actually more "bell-shaped" than stated
+* 4 (density,pH) is further verfied
+* sulphates actually gets higher as quality increases
+* alcohol does go up as quality goes up, however low quality wine has relatively 
+high alcohol
+
+## individual plots
+```{r} 
+bar_plotting("sulphates")
+box_jitter_plotting("sulphates")
+```
+
+### graph summary
+
+- relationship: sulphates gets higher as the quality increases
+- distribution & outlier: most of the observation lies within the box range. but for quality 5,6, there's a lot of outliers 
+
+```{r} 
+bar_plotting("total.sulfur.dioxide")
+box_jitter_plotting("total.sulfur.dioxide")
+```
+
+### graph summary
+
+- relationship: total.sulfur.dioxide gets higher as the quality increases; but the best wine
+have low total.sulfur.dioxide
+- distribution & outlier: for wine quality 5,6, the values are skewed left (smaller value);
+also, for quality 6, there's lots of outlier
+
+```{r} 
+bar_plotting("free.sulfur.dioxide")
+box_jitter_plotting("free.sulfur.dioxide")
+```
+
+### graph summary
+
+- relationship: bell-shaped
+- distribution & outlier: quite evenly; however, for quality 5,6 the spread is quite
+wide
+
+```{r} 
+bar_plotting("chlorides")
+```
+
+### graph summary
+
+- relationship: bell-shaped
+
+```{r} 
+bar_plotting("residual.sugar")
+box_jitter_plotting("residual.sugar")
+```
+
+### graph summary
+
+- relationship: bell-shaped
+- distribution & outlier: spread is narrow, which means the medium is  a good representation
+of the whole dataset; however, quality 5,6 has quite a few outlier
+
+```{r} 
+box_jitter_plotting("fixed.acidity")
+```
+
+### graph summary
+
+- relationship: inverted-bell-shaped
+- distribution & outlier: spread is quite wide
+
+```{r} 
+box_jitter_plotting("citric.acid")
+```
+
+### graph summary
+
+- relationship: citric.acid gets higher as the quality increases
+- distribution & outlier: spread is quite wide; however for quality 5,6, there's
+lots of observations are at the botton (0)
+
+## summary
+-  "fixed.acidity": has weak linkage with quality, however bad wine do have lower fixed.acidity
+- "volatile.acidity": gets lower when quality increases (strong)
+- "citric.acid": gets higher as quality gets better           
+- "residual.sugar": (relatively) unrelated       
+- "chlorides": (relatively) unrelated            
+- "free.sulfur.dioxide": bell-shaped  
+- "total.sulfur.dioxide": bell-shaped
+- "density": (relatively) unrelated              
+- "pH": (relatively) unrelated                   
+- "sulphates": gets higher as quality increases            
+- "alcohol": alcohol does go up as quality goes up, however low quality wine has relatively high alcohol    
+
+## Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+(using some of the graphs in the next section)
+
+### - positive linear: 
+  - "fixed.acidity", "citric.acid" -> strong
+  - "fixed.acidity", "density" -> strong
+  - "citric.acid", "fixed.acidity"
+
+### - negative linear:
+  - "fixed.acidity", "pH" -> strong
+  - "citric.acid", "fixed.acidity"
+  - "citric.acid","pH"
+  - "density","alcohol"
+
+### - other
+  - "citric.acid", "volatile.acidity"
+  - "free.sulfur.dioxide","total.sulfur.dioxide" -> strong
+
+## What was the strongest relationship you found?
+
+### with quality: 
+"volatile.acidity"
+
+### with other vars: 
+- "fixed.acidity", "citric.acid"
+- "fixed.acidity", "density"
+- "fixed.acidity", "pH"
+- "free.sulfur.dioxide","total.sulfur.dioxide"
+
+# Multivariate Plots Section
+
+# Multivariate Analysis
+### note: the numbers are the mutual info of the respective vars pairs
+
+```{r echo=FALSE, Multivariate_Plots}
+## scatter plot 
+for (a in colname_main){
+for (b in colname_main){
+x = sapply(main[[a]], as.numeric)
+y = sapply(main[[b]], as.numeric)
+y2d = discretize2d(x, y, numBins1=10, numBins2=10)
+m_info = mi.empirical(y2d)
+if (m_info > 0.3 && a!=b && a!="X" && b!="X"){
+    multi_plot = ggplot(main,aes(main[a],main[b],color = main["quality"]),size = 0.1)
+    multi_plot = multi_plot + layer(
+      geom = "point",
+      stat = "identity",
+      position = "identity"
+    ) + scale_colour_gradient(high = "#FF3333", low ="#00DD00")
+    multi_plot = multi_plot + xlab(a) + ylab(b)
+    print(multi_plot)
+    print("the mutual value of")
+    print(a)
+    print(b)
+    print(m_info)
+}
+}}
+```
+
+## quick summary
+I found that the relationships in "fixed.acidity","volatile.acidity",
+"citric.acid","sulphates" and "alcohol" are quite interesting. Thus, I decided to
+look further into these plots.
+
+```{r}
+## scatter plot + line with some interesting vars
+# interesting_vars = as.list(c("fixed.acidity","volatile.acidity","citric.acid","sulphates","alcohol"))
+# 
+# for (a in interesting_vars){
+# for (b in interesting_vars){
+# if (a!=b){
+# x_binned = a
+# y_binned = b
+#   
+# binned_var = sapply(main[["quality"]], as.numeric)
+# binned = cut(binned_var,breaks = 3)
+# main$quality_binned = as.factor(binned)
+# 
+# all_plot = ggplot(main,aes(main[x_binned],main[y_binned],color = main["quality"]),size = 0.1)
+# all_plot = all_plot + layer(
+#   geom = "point",
+#   stat = "identity",
+#   position = "identity"
+# ) + scale_color_gradient(high = "#FF3333", low ="#00DD00") 
+# all_plot = all_plot + geom_smooth(aes(group = main["quality_binned"],linetype = main["quality_binned"])) + scale_linetype_manual(values = c("dotted","dashed","solid"))
+# all_plot = all_plot + xlab(x_binned) + ylab(y_binned)
+# print(all_plot)
+# }}}
+
+# plotting some specific vars
+multi_plotting <- function(x,y){
+binned_var = sapply(main[["quality"]], as.numeric)
+binned = cut(binned_var,breaks = 3)
+main$quality_binned = as.factor(binned)
+
+all_plot = ggplot(main,aes(main[x],main[y],color = main["quality"]),size = 0.1)
+all_plot = all_plot + layer(
+  geom = "point",
+  stat = "identity",
+  position = "identity"
+) + scale_color_gradient(high = "#FF3333", low ="#00DD00") 
+all_plot = all_plot + geom_smooth(aes(group = main["quality_binned"],linetype = main["quality_binned"])) + scale_linetype_manual(values = c("dotted","dashed","solid"))
+all_plot = all_plot + xlab(x) + ylab(y)
+print(all_plot)
+}
+```
+
+
+```{r} 
+multi_plotting("alcohol",'sulphates')
+```
+
+### graph summary
+
+- the three line's not overlapping, which means different quality wine do have 
+different characterstics on these two vars
+- however, the line is rather flat, which means quality is primarily related with
+the sulphates
+
+```{r} 
+multi_plotting("alcohol",'volatile.acidity')
+```
+
+### graph summary
+
+- the three line's not overlapping, which means different quality wine do have 
+different characterstics on these two vars
+- the worst quality wine has the most volatile.acidity, however its relationship 
+is a bit more complicated and is represented by the dotted line in the graph
+
+```{r} 
+multi_plotting("alcohol",'fixed.acidity')
+```
+
+### graph summary
+
+- the best quality wine's has either low alcohol and high fixed.acidity, or high 
+alcohol and low fixed.acidity
+- for medium and low quality wine, it's rather random
+
+```{r} 
+multi_plotting("sulphates",'volatile.acidity')
+```
+
+### graph summary
+
+- the three line's not overlapping except when sulphates is larger than 1.5
+- the best quality winehas the lowest volatile.acidity
+
+```{r} 
+multi_plotting("citric.acid",'alcohol')
+```
+
+### graph summary
+
+- the best wine has high alcohol, for the others it's more random
+
+```{r} 
+multi_plotting("fixed.acidity",'volatile.acidity')
+```
+
+### graph summary
+
+- the worst wine has highest volatile.acidity
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+##### I did two kinds of plotting:
+- did a scatter plot of all two paired vars, with different quality colored differently
+- scatter plot some vars of choice and add a smooth line with different quality marked with different line
+
+##### Result:
+Most of the vars don't really strengthen when combined. We'll see a straight line in the graph, indicating a only one of the var (instead of both) is influencing the result. 
+
+### Were there any interesting or surprising interactions between features?
+I found the interaction between alcohol and fixed.acidity particularly interesting. 
+As fixed.acidity and alcohol both get higher, the quality of the wine increases.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+main$quality_new =  sapply(main["quality"],as.factor)
+color_quality = brewer.pal(n = 9, "Blues")[4:9]
+box = ggplot(main,aes(main$quality_new,main["citric.acid"],color = main$quality_new)) + geom_boxplot()
+box = box + geom_jitter(size = 0.1)
+box = box + scale_color_manual(values = color_quality)
+box = box + ylab("citric.acid") + xlab("quality")
+print(box)
+```
+
+### Description One
+- The median (as well as the "box") of citric.acid gets larger when the quality 
+gets better, indicating a positive correlation between citric.acid and quality.
+- However, the full range (the "line") remain of the same length and position, 
+indicating tha some outlier observations influencing the result.
+- When quality is set to either 5 or 6, the distribution of the "dot"s are quite 
+similar, indicating the fact that medium quality wine are all quite similar.
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+main$quality_new =  sapply(main["quality"],as.factor)
+color_quality = brewer.pal(n = 9, "Blues")[4:9]
+box = ggplot(main,aes(main$quality_new,main["volatile.acidity"],color = main$quality_new)) + geom_boxplot()
+box = box + geom_jitter(size = 0.1)
+box = box + scale_color_manual(values = color_quality)
+box = box + ylab("volatile.acidity") + xlab("quality")
+print(box)
+```
+
+### Description Two
+- We can see that the "box" and the median decrease as the volatile.acidity decreases.  
+- Quality 7 and 8 has similar property when it comes to volatile.acidity.
+- However, when quality is set to either 5 or 6, there's tons of outliers, might 
+cause some potential problems. This group of data might not be properly represented in this graph.
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+x_binned ="alcohol"
+y_binned ="fixed.acidity"
+  
+binned_var = sapply(main[["quality"]], as.numeric)
+binned = cut(binned_var,breaks = 3)
+main$quality_binned = as.factor(binned)
+
+all_plot = ggplot(main,aes(main[x_binned],main[y_binned],color = main["quality"]),size = 0.1)
+all_plot = all_plot + layer(
+  geom = "point",
+  stat = "identity",
+  position = "identity"
+) + scale_color_gradient(high = "#FF3333", low ="#00DD00") 
+all_plot = all_plot + geom_smooth(aes(group = main["quality_binned"],linetype = main["quality_binned"])) + scale_linetype_manual(values = c("dotted","dashed","solid"))
+all_plot = all_plot + xlab(x_binned) + ylab(y_binned)
+print(all_plot)
+```
+
+### Description Three
+- The high quality wine's line is mostly larger (closer to right) than the low 
+and medium quality wine, indicating that the high quality wine has a overall higher (alcohol + fixed.acidity)
+- However, most wine are in the "low alcohol low fixed.acidity" category, and are 
+labeled green to indicate lower quality.
+
+
+------
+
+# Reflection
+When dealing with this dataset, there are two major problem that I found particularly challenging:
+1) How to use the right kind of graph to represent the data: there are ton's of kinds of graphs out there, however some of them might be quite hard to read while other might not accurately represent the data. Furthermore, even if some kind of graph is useful when evaulating certain kinds of data, I might not be sufficiently familiar with that kind of graph to use it well. 
+2) How to determine whether a particular kind of relationship is "interesting" enough: When dealing with these graph, while some of the relationship are strong enough to be identified, others might just be so vague that I don't know whether to call those "interesting" or not.
+
+##### Limits when dealing with this dataset:
+- I just used plain eyes (plus some help from the "smooth" line function which plots some regression-style line on the graph), so the result might be too subjective
+- In this dataset, it's quite hard to find any complicated relationships since all the vars are rather simple and don't have any extra dimensions (e.g. time) to it.
+- Since I don't really know wine, I don't really know how to interpret the result.
+
+##### Some suggestions:
+- I think using machine learning to recognize relationship will be a more efficient 
+and more objective approach. Since our dependent variable is a ordinal var, we 
+can either 1) convert it to a binary var (e.g. high quality or not) and use classfiers
+such as decision tree or 2)try to use regression algos to predict the result
+- the relationship between "alcohol" and "fixed.acidity" is quite interesting and worth
+further investigation.
